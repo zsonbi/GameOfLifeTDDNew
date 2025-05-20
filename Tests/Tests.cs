@@ -10,8 +10,6 @@ namespace Tests
     //CellNearbyTest
     //SingleGenerationTest
     //MultipleGenerationTest
-    //ParseNotExistingFileThrowsErrorTest
-    //TryParseInvalidRLETest
     //TryOutOfBoundsGetCellTest
 
     public class Tests
@@ -23,11 +21,11 @@ namespace Tests
             Game game = await RLEParser.ReadInRLE(Path.Combine(Configs.INPUT_FILES, "blinker.rle"));
             Assert.NotNull(game);
 
-            Assert.Equal(3,game.BoardWidth);
-            Assert.Equal(1,game.BoardHeight);
-            Assert.Contains(2,game.SurvivalAmounts);
-            Assert.Contains(3,game.SurvivalAmounts);
-            Assert.Contains(3,game.BirthAmounts);
+            Assert.Equal(3, game.BoardWidth);
+            Assert.Equal(1, game.BoardHeight);
+            Assert.Contains(2, game.SurvivalAmounts);
+            Assert.Contains(3, game.SurvivalAmounts);
+            Assert.Contains(3, game.BirthAmounts);
             for (int i = 0; i < 3; i++)
             {
                 Assert.True(game.GetCell(0, i));
@@ -96,8 +94,8 @@ namespace Tests
 
 
             //Will only tast the first and last column since the size of the shape
-            Assert.False(game.GetCell(0,0));
-            Assert.False(game.GetCell(0, game.BoardWidth-1));
+            Assert.False(game.GetCell(0, 0));
+            Assert.False(game.GetCell(0, game.BoardWidth - 1));
 
             Assert.False(game.GetCell(1, 0));
             Assert.False(game.GetCell(1, game.BoardWidth - 1));
@@ -119,11 +117,37 @@ namespace Tests
 
             Assert.False(game.GetCell(7, 0));
             Assert.False(game.GetCell(7, game.BoardWidth - 1));
-            
+
             Assert.False(game.GetCell(8, 0));
             Assert.False(game.GetCell(8, game.BoardWidth - 1));
 
         }
+
+
+        [Fact]
+        public async Task ParseNotExistingFileThrowsErrorTest()
+        {
+            await Assert.ThrowsAsync<FileNotFoundException>(() => RLEParser.ReadInRLE(Path.Combine(Configs.INPUT_FILES, "NoSuchFile.rle")));
+        }
+
+        [Theory]
+        [InlineData("invalid1.rle")]
+        [InlineData("invalid2.rle")]
+        [InlineData("invalid3.rle")]
+        [InlineData("invalid4.rle")]
+        public async Task TryParseInvalidRLETest(string filePath)
+        {
+            await Assert.ThrowsAsync<ArgumentException>(() => RLEParser.ReadInRLE(Path.Combine(Configs.INPUT_FILES, filePath)));
+        }
+
+        [Fact]
+        public async Task TryOutOfBoundsGetCellTest()
+        {
+            Game game = await RLEParser.ReadInRLE(Path.Combine(Configs.INPUT_FILES, "blinker.rle"));
+            Assert.Throws<ArgumentOutOfRangeException>(() => game.GetCell(0,5));
+        }
+
+        
 
     }
 }

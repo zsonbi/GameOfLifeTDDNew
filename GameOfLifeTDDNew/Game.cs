@@ -19,59 +19,77 @@ namespace GameOfLifeTDDNew
 
         public bool GetCell(int row, int col)
         {
+            if(row < 0 || row > BoardHeight || col < 0 || col > BoardWidth)
+            {
+                throw new ArgumentOutOfRangeException("Out of the board with this index combination");
+            }
+
             return matrix[row, col];
         }
 
         public Game(string[] fileContent)
         {
-            int index = 0;
-            while (index < fileContent.Length && fileContent[index].StartsWith("#"))
+            try
             {
-                index++;
-            }
-            string[] firstLine = fileContent[index++].Split("=");
-            BoardWidth = int.Parse(firstLine[1].Split(',')[0]);
-            BoardHeight = int.Parse(firstLine[2].Split(',')[0]);
 
-            foreach (char number in firstLine[3].Split('/')[0].Trim('B'))
-            {
-                BirthAmounts.Add(number - '0');
-            }
 
-            foreach (char number in firstLine[3].Split('/')[1].Trim('S'))
-            {
-                SurvivalAmounts.Add(number - '0');
-            }
-
-            matrix = new bool[BoardHeight, BoardWidth];
-
-            string board = "";
-            for (int i = index; i < fileContent.Length; i++)
-            {
-                board += fileContent[i];
-            }
-            string[] rows = board.Trim('!').Split('$');
-            string num = "";
-            for (int i = 0; i < rows.Length; i++)
-            {
-                int colIndex = 0;
-
-                foreach (char item in rows[i])
+                int index = 0;
+                while (index < fileContent.Length && fileContent[index].StartsWith("#"))
                 {
-                    if (item >= '0' && item <= '9')
+                    index++;
+                }
+                string[] firstLine = fileContent[index++].Split("=");
+                BoardWidth = int.Parse(firstLine[1].Split(',')[0]);
+                BoardHeight = int.Parse(firstLine[2].Split(',')[0]);
+
+                foreach (char number in firstLine[3].Split('/')[0].Trim('B'))
+                {
+                    BirthAmounts.Add(number - '0');
+                }
+
+                foreach (char number in firstLine[3].Split('/')[1].Trim('S'))
+                {
+                    SurvivalAmounts.Add(number - '0');
+                }
+
+                matrix = new bool[BoardHeight, BoardWidth];
+
+                string board = "";
+                for (int i = index; i < fileContent.Length; i++)
+                {
+                    board += fileContent[i];
+                }
+                if(!board.EndsWith('!'))
+                {
+                    throw new ArgumentException("Didn't close with '!'");
+                }
+                string[] rows = board.Trim('!').Split('$');
+                string num = "";
+                for (int i = 0; i < rows.Length; i++)
+                {
+                    int colIndex = 0;
+
+                    foreach (char item in rows[i])
                     {
-                        num += item;
-                    }
-                    else
-                    {
-                        int cellsToPlace = num =="" ? 1 : Convert.ToInt32(num);
-                        for (int j = 0; j < cellsToPlace; j++)
+                        if (item >= '0' && item <= '9')
                         {
-                            matrix[i, colIndex++] = item == 'o';
+                            num += item;
                         }
-                        num = "";
+                        else
+                        {
+                            int cellsToPlace = num == "" ? 1 : Convert.ToInt32(num);
+                            for (int j = 0; j < cellsToPlace; j++)
+                            {
+                                matrix[i, colIndex++] = item == 'o';
+                            }
+                            num = "";
+                        }
                     }
                 }
+            }
+            catch (Exception)
+            {
+                throw new ArgumentException("RLE is invalid format");
             }
         }
     }
