@@ -227,7 +227,7 @@ namespace Tests
         [Fact]
         public async Task SingleGenerationTest()
         {
-            Game game = await RLEParser.ReadInRLE(Path.Combine(Configs.INPUT_FILES, "Glider.rle"));
+            Game game = await RLEParser.ReadInRLE(Path.Combine(Configs.INPUT_FILES, "glider.rle"));
 
             // XOX
             // XXO
