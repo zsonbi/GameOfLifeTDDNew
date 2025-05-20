@@ -119,6 +119,14 @@ namespace GameOfLifeTDDNew
             return encoded;
         }
 
+        public void Run(int generationCount)
+        {
+            for (int i = 0; i < generationCount; i++)
+            {
+                Tick();
+            }
+        }
+
         public void Tick()
         {
             bool[,] newBoardState = new bool[BoardHeight, BoardWidth];

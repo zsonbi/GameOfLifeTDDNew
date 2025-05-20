@@ -1,13 +1,14 @@
 using System.Threading.Tasks;
+using System.Xml.Schema;
 using GameOfLifeTDDNew;
 
 namespace Tests
 {
     //Tests to write
+
     //TestProgramForInputsTest
-    //SingleGenerationTest
-    //MultipleGenerationTest
-    //TryOutOfBoundsGetCellTest
+
+ 
   
 
     public class Tests
@@ -192,6 +193,97 @@ namespace Tests
                 Assert.False(game.GetCell(0, i));
             }
         }
+
+        [Fact]
+        public async Task MultipleGenerationTest1()
+        {
+            Game game = await RLEParser.ReadInRLE(Path.Combine(Configs.INPUT_FILES, "birthTestFile.rle"));
+            Assert.True(game.GetCell(0, 0));
+            Assert.True(game.GetCell(0, 1));
+            Assert.True(game.GetCell(1, 0));
+            Assert.False(game.GetCell(1, 1));
+            game.Run(2);
+            for (int i = 0; i < 2; i++)
+            {
+                for (int j = 0; j < 2; j++)
+                {
+                    Assert.True(game.GetCell(i, j));
+                }
+            }
+        }
+
+        [Fact]
+        public async Task SingleGenerationTest()
+        {
+            Game game = await RLEParser.ReadInRLE(Path.Combine(Configs.INPUT_FILES, "Glider.rle"));
+
+            // XOX
+            // XXO
+            // OOO
+            game.Run(1);
+            // XXX
+            // OXO
+            // XOO
+
+            Assert.False(game.GetCell(0, 0));
+            Assert.False(game.GetCell(0, 1));
+            Assert.False(game.GetCell(0, 2));
+
+            Assert.True(game.GetCell(1, 0));
+            Assert.False(game.GetCell(1, 1));
+            Assert.True(game.GetCell(1, 2));
+
+            Assert.False(game.GetCell(2, 0));
+            Assert.True(game.GetCell(2, 1));
+            Assert.True(game.GetCell(2, 2));
+        }
+
+        [Fact]
+        public async Task MultipleGenerationTest2()
+        {
+            Game game = await RLEParser.ReadInRLE(Path.Combine(Configs.INPUT_FILES, "blinkerBigger.rle"));
+
+            Assert.False(game.GetCell(0, 0));
+            Assert.False(game.GetCell(0, 1));
+            Assert.False(game.GetCell(0, 2));
+
+            Assert.True(game.GetCell(1, 0));
+            Assert.True(game.GetCell(1, 1));
+            Assert.True(game.GetCell(1, 2));
+
+            Assert.False(game.GetCell(2, 0));
+            Assert.False(game.GetCell(2, 1));
+            Assert.False(game.GetCell(2, 2));
+
+            game.Run(2);
+            Assert.False(game.GetCell(0, 0));
+            Assert.False(game.GetCell(0, 1));
+            Assert.False(game.GetCell(0, 2));
+
+            Assert.True(game.GetCell(1, 0));
+            Assert.True(game.GetCell(1, 1));
+            Assert.True(game.GetCell(1, 2));
+
+            Assert.False(game.GetCell(2, 0));
+            Assert.False(game.GetCell(2, 1));
+            Assert.False(game.GetCell(2, 2));
+
+            game.Run(3);
+
+            Assert.False(game.GetCell(0, 0));
+            Assert.True(game.GetCell(0, 1));
+            Assert.False(game.GetCell(0, 2));
+
+            Assert.False(game.GetCell(1, 0));
+            Assert.True(game.GetCell(1, 1));
+            Assert.False(game.GetCell(1, 2));
+
+            Assert.False(game.GetCell(2, 0));
+            Assert.True(game.GetCell(2, 1));
+            Assert.False(game.GetCell(2, 2));
+
+        }
+
 
         [Fact]
         public async Task BirthTest()
