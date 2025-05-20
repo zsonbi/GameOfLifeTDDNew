@@ -25,6 +25,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="inputFiles\aloneCell.rle">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="inputFiles\invalid4.rle">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

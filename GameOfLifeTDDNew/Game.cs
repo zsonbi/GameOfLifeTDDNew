@@ -118,6 +118,55 @@ namespace GameOfLifeTDDNew
             encoded += "!";
             return encoded;
         }
+
+        public void Tick()
+        {
+            bool[,] newBoardState = new bool[BoardHeight, BoardWidth];
+
+            for (int i = 0; i < BoardHeight; i++)
+            {
+                for (int j = 0; j < BoardWidth; j++)
+                {
+                    int neighbourCount = GetNeighbourCount(i, j);
+
+                    if (matrix[i, j])
+                    {
+                        newBoardState[i, j] = SurvivalAmounts.Contains(neighbourCount);
+                    }
+                    else
+                    {
+                        newBoardState[i, j] = BirthAmounts.Contains(neighbourCount);
+                    }
+                }
+            }
+
+            matrix = newBoardState;
+        }
+
+        public int GetNeighbourCount(int row, int col)
+        {
+            int count = 0;
+            for (int i = row - 1; i <= row + 1; i++)
+            {
+                if (i < 0 || i >= BoardHeight)
+                {
+                    continue;
+                }
+                for (int j = col - 1; j <= col + 1; j++)
+                {
+                    if (j < 0 || j >= BoardWidth || (row == i && col == j))
+                    {
+                        continue;
+                    }
+                    if (matrix[i, j])
+                    {
+                        count++;
+                    }
+                }
+            }
+            return count;
+        }
+
     }
 
 }

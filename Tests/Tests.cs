@@ -4,12 +4,12 @@ using GameOfLifeTDDNew;
 namespace Tests
 {
     //Tests to write
-
-    //AloneCellTest
+    //TestProgramForInputsTest
     //CellNearbyTest
     //SingleGenerationTest
     //MultipleGenerationTest
     //TryOutOfBoundsGetCellTest
+  
 
     public class Tests
     {
@@ -165,6 +165,29 @@ namespace Tests
 
             Game testBlinkerGame = await RLEParser.ReadInRLE(Path.Combine(Configs.INPUT_FILES, filePath));
             Game writtenOutGame = await RLEParser.ReadInRLE(fileId + "Result.rle");
+        }
+
+        [Fact]
+        public async Task AloneCellTest()
+        {
+            Game game = await RLEParser.ReadInRLE(Path.Combine(Configs.INPUT_FILES, "aloneCell.rle"));
+            Assert.False(game.GetCell(0, 0));
+            Assert.True(game.GetCell(0, 1));
+            Assert.False(game.GetCell(0, 2));
+            game.Tick();
+            for (int i = 0; i < 3; i++)
+            {
+                Assert.False(game.GetCell(0, i));
+            }
+        }
+
+
+        [Fact]
+        public async Task NeighbourCountTest()
+        {
+            Game game = await RLEParser.ReadInRLE(Path.Combine(Configs.INPUT_FILES, "glider.rle"));
+
+            Assert.Equal(5, game.GetNeighbourCount(1,1));
         }
 
     }
