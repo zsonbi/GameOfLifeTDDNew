@@ -19,7 +19,7 @@ namespace GameOfLifeTDDNew
 
         public bool GetCell(int row, int col)
         {
-            if(row < 0 || row > BoardHeight || col < 0 || col > BoardWidth)
+            if (row < 0 || row > BoardHeight || col < 0 || col > BoardWidth)
             {
                 throw new ArgumentOutOfRangeException("Out of the board with this index combination");
             }
@@ -59,7 +59,7 @@ namespace GameOfLifeTDDNew
                 {
                     board += fileContent[i];
                 }
-                if(!board.EndsWith('!'))
+                if (!board.EndsWith('!'))
                 {
                     throw new ArgumentException("Didn't close with '!'");
                 }
@@ -87,10 +87,37 @@ namespace GameOfLifeTDDNew
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 throw new ArgumentException("RLE is invalid format");
             }
         }
+
+        public string Encode()
+        {
+            string encoded = $"x = {BoardWidth}, y = {BoardHeight}, rule = B{String.Concat(BirthAmounts)}/S{String.Concat(SurvivalAmounts)}\n";
+
+            for (int i = 0; i < BoardHeight; i++)
+            {
+                int num = 1;
+                bool type = matrix[i, 0];
+                for (int j = 1; j < BoardWidth; j++)
+                {
+                    if (type != matrix[i, j])
+                    {
+                        encoded += (num == 1 ? "" : num) + (type ? "o" : "b");
+                        num = 1;
+                        type = matrix[i, j];
+                    }
+                }
+                encoded += (num == 1 ? "" : num) + (type ? "o" : "b");
+
+                encoded += "$";
+            }
+
+            encoded += "!";
+            return encoded;
+        }
     }
+
 }

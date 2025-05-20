@@ -14,5 +14,14 @@ namespace GameOfLifeTDDNew
             return new Game(await File.ReadAllLinesAsync(filePath));
         }
 
+        public static async Task<string> WriteOutRLE(Game game,string filePath)
+        {
+            string encoded=game.Encode();
+
+           await File.WriteAllTextAsync(filePath, encoded);
+
+            return encoded;
+        }
+
     }
 }

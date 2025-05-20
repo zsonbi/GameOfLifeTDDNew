@@ -5,7 +5,6 @@ namespace Tests
 {
     //Tests to write
 
-    //WriteOutRLETest
     //AloneCellTest
     //CellNearbyTest
     //SingleGenerationTest
@@ -147,7 +146,26 @@ namespace Tests
             Assert.Throws<ArgumentOutOfRangeException>(() => game.GetCell(0,5));
         }
 
-        
+        [Theory]
+        [InlineData("blinker.rle")]
+        [InlineData("block.rle")]
+        [InlineData("glider.rle")]
+        [InlineData("gosperglidergun.rle")]
+        public async Task WriteOutRLETest(string filePath)
+        {
+            Game game = await RLEParser.ReadInRLE(Path.Combine(Configs.INPUT_FILES, filePath));
+
+            //ToMakeItUnique
+            string fileId=DateTime.Now.Ticks.ToString();
+
+
+            await RLEParser.WriteOutRLE(game, fileId + "Result.rle");
+
+            Assert.True(File.Exists(fileId + "Result.rle"));
+
+            Game testBlinkerGame = await RLEParser.ReadInRLE(Path.Combine(Configs.INPUT_FILES, filePath));
+            Game writtenOutGame = await RLEParser.ReadInRLE(fileId + "Result.rle");
+        }
 
     }
 }
