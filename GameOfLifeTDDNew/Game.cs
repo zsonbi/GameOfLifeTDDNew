@@ -42,12 +42,12 @@ namespace GameOfLifeTDDNew
                 BoardWidth = int.Parse(firstLine[1].Split(',')[0]);
                 BoardHeight = int.Parse(firstLine[2].Split(',')[0]);
 
-                foreach (char number in firstLine[3].Split('/')[0].Trim('B'))
+                foreach (char number in firstLine[3].Split('/')[0].Trim().Trim('B'))
                 {
                     BirthAmounts.Add(number - '0');
                 }
 
-                foreach (char number in firstLine[3].Split('/')[1].Trim('S'))
+                foreach (char number in firstLine[3].Split('/')[1].Trim().Trim('S'))
                 {
                     SurvivalAmounts.Add(number - '0');
                 }
@@ -108,6 +108,10 @@ namespace GameOfLifeTDDNew
                         encoded += (num == 1 ? "" : num) + (type ? "o" : "b");
                         num = 1;
                         type = matrix[i, j];
+                    }
+                    else
+                    {
+                        num++;
                     }
                 }
                 encoded += (num == 1 ? "" : num) + (type ? "o" : "b");

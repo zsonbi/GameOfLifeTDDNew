@@ -1,15 +1,13 @@
 using System.Threading.Tasks;
 using System.Xml.Schema;
 using GameOfLifeTDDNew;
+using Microsoft.VisualStudio.TestPlatform.TestHost;
 
 namespace Tests
 {
     //Tests to write
 
-    //TestProgramForInputsTest
 
- 
-  
 
     public class Tests
     {
@@ -143,7 +141,7 @@ namespace Tests
         public async Task TryOutOfBoundsGetCellTest()
         {
             Game game = await RLEParser.ReadInRLE(Path.Combine(Configs.INPUT_FILES, "blinker.rle"));
-            Assert.Throws<ArgumentOutOfRangeException>(() => game.GetCell(0,5));
+            Assert.Throws<ArgumentOutOfRangeException>(() => game.GetCell(0, 5));
         }
 
         [Theory]
@@ -156,7 +154,7 @@ namespace Tests
             Game game = await RLEParser.ReadInRLE(Path.Combine(Configs.INPUT_FILES, filePath));
 
             //ToMakeItUnique
-            string fileId=DateTime.Now.Ticks.ToString();
+            string fileId = DateTime.Now.Ticks.ToString();
 
 
             await RLEParser.WriteOutRLE(game, fileId + "Result.rle");
@@ -165,6 +163,20 @@ namespace Tests
 
             Game testBlinkerGame = await RLEParser.ReadInRLE(Path.Combine(Configs.INPUT_FILES, filePath));
             Game writtenOutGame = await RLEParser.ReadInRLE(fileId + "Result.rle");
+
+
+            Assert.Equal(testBlinkerGame.BoardWidth, writtenOutGame.BoardWidth);
+            Assert.Equal(testBlinkerGame.BoardHeight, writtenOutGame.BoardHeight);
+            Assert.Equal(testBlinkerGame.SurvivalAmounts, writtenOutGame.SurvivalAmounts);
+            Assert.Equal(testBlinkerGame.BirthAmounts, writtenOutGame.BirthAmounts);
+
+            for (int i = 0; i < testBlinkerGame.BoardHeight; i++)
+            {
+                for (int j = 0; j < testBlinkerGame.BoardWidth; j++)
+                {
+                    Assert.Equal(testBlinkerGame.GetCell(i, j), writtenOutGame.GetCell(i, j));
+                }
+            }
         }
 
         [Fact]
@@ -312,10 +324,10 @@ namespace Tests
             Assert.True(game.GetCell(0, 1));
             Assert.True(game.GetCell(0, 2));
             Assert.True(game.GetCell(1, 1));
-            Assert.False(game.GetCell(1,0));
-            Assert.False(game.GetCell(1,2));
-            Assert.False(game.GetCell(2,0));
-            Assert.False(game.GetCell(2,1));
+            Assert.False(game.GetCell(1, 0));
+            Assert.False(game.GetCell(1, 2));
+            Assert.False(game.GetCell(2, 0));
+            Assert.False(game.GetCell(2, 1));
             Assert.False(game.GetCell(2, 2));
 
             game.Tick();
@@ -336,7 +348,45 @@ namespace Tests
         {
             Game game = await RLEParser.ReadInRLE(Path.Combine(Configs.INPUT_FILES, "glider.rle"));
 
-            Assert.Equal(5, game.GetNeighbourCount(1,1));
+            Assert.Equal(5, game.GetNeighbourCount(1, 1));
+        }
+
+
+        [Fact]
+        public async Task TestProgramForInputsTest()
+        {
+            //Delete previous result file if there is
+            if (File.Exists("out.rle"))
+            {
+                File.Delete("out.rle");
+            }
+
+            //It will write out ./out.rle
+            await GameOfLifeTDDNew.Program.RunSim(new string[] { Path.Combine(Configs.INPUT_FILES, "blinkerBigger.rle"), "2" });
+
+            Assert.True(File.Exists("out.rle"));
+
+            Game testBlinkerGame = await RLEParser.ReadInRLE(Path.Combine(Configs.INPUT_FILES, "blinkerBigger.rle"));
+            Game writtenOutGame = await RLEParser.ReadInRLE("out.rle");
+
+            Assert.Equal(testBlinkerGame.BoardWidth, writtenOutGame.BoardWidth);
+            Assert.Equal(testBlinkerGame.BoardHeight, writtenOutGame.BoardHeight);
+            Assert.Equal(testBlinkerGame.SurvivalAmounts, writtenOutGame.SurvivalAmounts);
+            Assert.Equal(testBlinkerGame.BirthAmounts, writtenOutGame.BirthAmounts);
+
+            for (int i = 0; i < testBlinkerGame.BoardHeight; i++)
+            {
+                for (int j = 0; j < testBlinkerGame.BoardWidth; j++)
+                {
+                    Assert.Equal(testBlinkerGame.GetCell(i, j), writtenOutGame.GetCell(i, j));
+                }
+            }
+        }
+
+        [Fact]
+        public async Task ProgramInvalidArgumentCountTest()
+        {
+            await Assert.ThrowsAsync<ArgumentException>(() => GameOfLifeTDDNew.Program.RunSim(new string[] { Path.Combine(Configs.INPUT_FILES, "blinkerBigger.rle") }));
         }
 
     }
