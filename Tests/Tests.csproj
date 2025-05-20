@@ -25,6 +25,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="inputFiles\birthTestFile.rle">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="inputFiles\survivalTestFile.rle">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="inputFiles\twoCellsNextToEachOther.rle">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="inputFiles\aloneCell.rle">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
